@@ -1,0 +1,611 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Web API Design</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-background-image="img/home.png">
+            <div style="background-color: rgba(0, 0, 0, 0.6); color: #fff; padding: 20px;">
+                <h1>Web API Design</h1>
+                <h3>Principles in Pragmatic REST</h3>
+            </div>
+        </section>
+
+        <section>
+          <section>
+            <p>We care about designing Web APIs that developers will love.</p>
+          </section>
+
+          <section>
+            <p>How many times did you experienced to integrate APIs?</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Let us define API</h3>
+          </section>
+
+          <section data-background-color="#ffffff">
+            <img height="400px" src="img/api.png" alt="" style="background: none; box-shadow: none; border: none;">
+          </section>
+
+          <section>
+            <p>In computer programming, an <span class="fragment highlight-blue">application programming interface (API)</span> is a set of subroutine definitions, protocols, and tools for building application software. In general terms, it is a set of clearly defined methods of communication between various software components. </p>
+
+            <small>Source: https://en.wikipedia.org/wiki/Application_programming_interface</small>
+          </section>
+        </section>
+
+        <section>
+          <section data-background-video="img/rest.mp4" data-background-video-loop=true data-background-video-muted=true data-background-size="contain">
+            <div style="background-color: rgba(0, 0, 0, 0.6); color: #fff; padding: 20px;">
+              <h3>REST</h3>
+            </div>
+          </section>
+
+          <section>
+            <p><strong>Representational state transfer (REST)</strong> or RESTful web services are a way of providing interoperability between computer systems on the internet.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Pragmatic REST is a design problem</h3>
+          </section>
+          <section>
+            <p>You have to get the design right, because design communicates how something will be used. The question becomes - what is the design with optimal benefit for the app developer?</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Nouns are <span class="fragment highlight-blue">good</span>; verbs are <span class="fragment highlight-red">bad</span></h3>
+            <p>The number one principle in pragmatic RESTful design is: <strong>keep simple things simple</strong>.</p>
+          </section>
+
+          <section>
+            <h3>Keep base URL <span class="fragment highlight-blue">simple and intuitive</span></h3>
+            <p>The base URL is the most important design affordance of your API. A simple and intuitive base URL design makes using your API easy.</p>
+          </section>
+
+          <section>
+            <img height="500px" src="img/what-do-you-do.jpg" alt="" style="background: none; box-shadow: none; border: none;">
+            <p>Why are there pull handles on a push door?</p>
+
+            <aside class="notes">
+              <h3>Not an intuitive interface</h3>
+            </aside>
+          </section>
+
+          <section>
+            <h3>Keep verbs <span class="fragment highlight-red">out</span> of base URL</h3>
+
+            <ul>
+              <li>/getAllDogs</li>
+              <li>/verifyLocation</li>
+              <li>/checkHealth</li>
+              <li>/getLocation</li>
+              <li>/getDog</li>
+            </ul>
+
+            <aside class="notes">
+              <p>Many Web APIs start by using a method-driven approach to URL design. These method based URLs sometimes contain verbs - sometimes at the beginning, sometimes at the end.</p>
+            </aside>
+          </section>
+
+          <section>
+            <h3>Use <span class="fragment highlight-blue">HTTP verbs</span> to operate on the collections and elements.</h3>
+            <p> Our HTTP verbs are <span class="fragment highlight-blue">POST</span>, <span class="fragment highlight-blue">GET</span>, <span class="fragment highlight-blue">PUT</span>, and <span class="fragment highlight-blue">DELETE</span>. Think of them as mapping to the acronym, <span class="fragment highlight-blue">CRUD (Create-Read-Update-Delete)</span>.</p>
+          </section>
+
+          <section>
+            <table>
+              <thead>
+                <tr>
+                  <th>Resource</th>
+                  <th>POST<br>create</th>
+                  <th>GET<br>read</th>
+                  <th>PUT<br>update</th>
+                  <th>DELETE<br>delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>/dogs</td>
+                  <td>Create a new dog</td>
+                  <td>List dogs</td>
+                  <td>Bulk update dogs</td>
+                  <td>Delete all dogs</td>
+                </tr>
+                <tr>
+                  <td>/dogs/1234</td>
+                  <td>Error</td>
+                  <td>Show Blacky</td>
+                  <td>If exists update Blacky</td>
+                  <td>Delete Blacky</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <p>The point is that developers probably don't need the chart to understand how the API behaves. They can experiment with and learn the API without the documentation.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Plural nouns and concrete names</h3>
+          </section>
+
+          <section>
+            <p>Should you choose <span class="fragment highlight-blue">singular</span> or <span class="fragment highlight-blue">plural</span> nouns for your resource names? You'll see popular APIs use both. Let's look at a few examples:</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Foursquare</th>
+                  <th>GroupOn</th>
+                  <th>Zappos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>/checkins</td>
+                  <td>/deals</td>
+                  <td>/Product</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <aside class="notes">
+              <p>Given that the first thing most people probably do with a RESTful API is a GET, we think it reads more easily and is more intuitive to use plural nouns. But above all, avoid a mixed model in which you use singular for some resources, plural for others. Being consistent allows developers to predict and guess the method calls as they learn to work with your API.</p>
+            </aside>
+          </section>
+
+          <section>
+            <h3>Concrete names are better than abstract</h3>
+          </section>
+
+          <section>
+            <p>Achieving pure abstraction is sometimes a goal of API architects. However, that abstraction is not always meaningful for developers.</p>
+          </section>
+
+          <section>
+            <p>Take for example an API that accesses content in various forms - blogs, videos, news articles, and so on.</p>
+          </section>
+
+          <section>
+            <p>An API that models everything at the highest level of abstraction - as <span class="fragment highlight-blue">/items</span> or <span class="fragment highlight-blue">/assets</span> in our example - loses the opportunity to paint a tangible picture for developers to know what they can do with this API. It is more compelling and useful to see the resources listed as blogs, videos, and news articles.</p>
+          </section>
+
+          <section>
+            <p>The level of abstraction depends on your scenario. You also want to expose a manageable number of resources. Aim for concrete naming and to keep the number of resources between 12 and 24.</p>
+          </section>
+
+          <section>
+            <p>In summary, an intuitive API uses <span class="fragment highlight-blue">plural rather than singular nouns</span>, and <span class="fragment highlight-blue">concrete rather than abstract names</span>.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3><span class="fragment highlight-blue">Simplify associations</span> - <span class="fragment highlight-blue">sweep complexity under the ‘?’</span></h3>
+
+            <aside class="notes">
+              <p>In this section, we explore API design considerations when handling associations between resources and parameters like states and attributes.</p>
+            </aside>
+          </section>
+
+          <section>
+            <h3>Associations</h3>
+            <p>Resources almost always have relationships to other resources.</p>
+
+            <aside class="notes">
+              <p>What's a simple way to express these relationships in a Web API?</p>
+            </aside>
+          </section>
+
+          <section>
+            <p>Let's look again at the API we modeled in nouns are good, verbs are bad - the API that interacts with our dogs resource. </p>
+          </section>
+
+          <section>
+            <p>We're using HTTP verbs to operate on the resources and collections. Our dogs belong to owners. To get all the dogs belonging to a specific owner, or to create a new dog for that owner, do a GET or a POST:</p>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>GET</td>
+                  <td>/owners/5678/dogs</td>
+                </tr>
+                <tr>
+                  <td>POST</td>
+                  <td>/owners/5678/dogs</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <aside class="notes">
+              <p>Now, the relationships can be complex. Owners have relationships with veterinarians, who have relationships with dogs, who have relationships with food, and so on. </p>
+            </aside>
+          </section>
+
+          <section>
+            <p>It's not uncommon to see people string these together making a URL 5 or 6 levels deep. Remember that once you have the primary key for one level, you usually don't need to include the levels above because you've already got your specific object.</p>
+          </section>
+
+          <section>
+            <p>In other words, you shouldn't need too many cases where a URL is deeper</p>
+
+            <small>/resource/identifier/resource</small>
+
+            <aside class="notes">
+              <p>As much as possible max of 2nd level</p>
+            </aside>
+          </section>
+
+          <section>
+            <h3>Sweep complexity behind the ‘?’</h3>
+
+            <p>Most APIs have intricacies beyond the base level of a resource. Complexities can include many states that can be updated, changed, queried, as well as the attributes associated with a resource.</p>
+          </section>
+
+          <section>
+            <p>Make it simple for developers to use the base URL by putting optional states and attributes behind the HTTP question mark. To get all red dogs running in the park:</p>
+            <small>GET /dogs?color=red&state=running&location=park</small>
+          </section>
+
+          <section>
+            <p>In summary, keep your API intuitive by simplifying the associations between resources, and sweeping parameters and other complexities under the rug of the HTTP question mark.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3><span class="fragment highlight-red">Handling Errors</span></h3>
+          </section>
+
+          <section>
+            <p>We software developers, don't always like to think about exceptions and error handling but it is a very important piece of the puzzle for any software developer, and especially for API designers.</p>
+          </section>
+
+          <section>
+            <p>Why is good error design especially important for API designers?</p>
+          </section>
+
+          <section>
+            <p>From the perspective of the developer consuming your Web API, everything at the other side of that interface is a black box. Errors therefore become a key tool providing context and visibility into how to use an API.</p>
+          </section>
+
+          <section>
+            <p>How to think about errors in a pragmatic way with REST?</p>
+          </section>
+
+          <section>
+            <h3>Facebook</h3>
+            <p>HTTP Status Code: 200</p>
+            <p>{"type" : "OauthException", "message":"(#803) Some of the aliases you requested do not exist: foo.bar"}</p>
+          </section>
+
+          <section>
+            <h3>Facebook</h3>
+            <p>No matter what happens on a Facebook request, you get back the 200-status code - everything is OK. Many error messages also push down into the HTTP response. Here they also throw an #803 error but with no information about what #803 is or how to react to it.</p>
+          </section>
+
+          <section>
+            <h3>Twilio</h3>
+            <p>HTTP Status Code: 401</p>
+            <p>{"status" : "401", "message":"Authenticate","code": 20003, "more info": "http://www.twilio.com/docs/errors/20003"}</p>
+          </section>
+
+          <section>
+            <h3>Twilio</h3>
+            <p>Twilio does a great job aligning errors with HTTP status codes. Like Facebook, they provide a more granular error message but with a link that takes you to the documentation. Community commenting and discussion on the documentation helps to build a body of information and adds context for developers experiencing these errors.</p>
+          </section>
+
+          <section>
+            <h3>SimpleGeo</h3>
+            <p>HTTP Status Code: 401</p>
+            <p>{"code" : 401, "message": "Authentication Required"}</p>
+          </section>
+
+          <section>
+            <h3>SimpleGeo</h3>
+            <p>SimpleGeo provides error codes but with no additional value in the payload.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>A couple of best practices</h3>
+          </section>
+
+          <section>
+            <p>Use HTTP status codes and try to map them cleanly to relevant standard-based codes.</p>
+          </section>
+
+          <section>
+            <p>Most API providers use a small subset. For example, the Google GData API uses only 10 status codes; Netflix uses 9, and Digg, only 8.</p>
+          </section>
+
+          <section>
+            <h3>Google GData</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>200</td>
+                  <td>201</td>
+                  <td>304</td>
+                  <td>400</td>
+                  <td>401</td>
+                  <td>403</td>
+                  <td>404</td>
+                  <td>409</td>
+                  <td>410</td>
+                  <td>500</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>Netflix</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>200</td>
+                  <td>201</td>
+                  <td>304</td>
+                  <td>400</td>
+                  <td>401</td>
+                  <td>403</td>
+                  <td>404</td>
+                  <td>412</td>
+                  <td>500</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <h3>Digg</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td>200</td>
+                  <td>400</td>
+                  <td>401</td>
+                  <td>403</td>
+                  <td>404</td>
+                  <td>410</td>
+                  <td>500</td>
+                  <td>503</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <p>How many status codes should you use for your API?</p>
+          </section>
+
+          <section>
+            <p>There are really only 3 outcomes in the interaction between an app and an API:</p>
+
+            <ul>
+              <li>Everything worked - success</li>
+              <li>The application did something wrong – client error</li>
+              <li>The API did something wrong – server error</li>
+            </ul>
+          </section>
+
+          <section>
+            <p>We can start by using the following 3 codes. If you need more, add them. But we shouldn't need to go beyond 8.</p>
+
+            <ul>
+              <li>200 - OK</li>
+              <li>400 - Bad Request</li>
+              <li>500 - Internal Server Error</li>
+            </ul>
+          </section>
+
+          <section>
+            <p>Additional</p>
+
+            <ul>
+              <li>201 - Created</li>
+              <li>304 - Not Modified</li>
+              <li>404 - Not Found</li>
+              <li>401 - Unauthorized</li>
+              <li>403 - Forbidden</li>
+            </ul>
+
+            <aside class="notes">
+              <p>Check out this good Wikipedia entry for all HTTP Status codes.</p>
+            </aside>
+          </section>
+
+          <section>
+            <p>In summary, be verbose and use plain language descriptions. Add as many hints as your API team can think of about what's causing an error.</p>
+            <p>It is highly recommend to add a link in description for more information, like Twilio does.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Tips for versioning</h3>
+          </section>
+
+          <section>
+            <p><span class="fragment highlight-blue">Versioning</span> is one of the most important considerations when designing your Web API.</p>
+          </section>
+
+          <section>
+            <p>Never release an API without a version and make the version mandatory.</p>
+          </section>
+
+          <section>
+            <p>API providers handle versioning</p>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>Twilio</td>
+                  <td>/2010-04-01/Accounts/</td>
+                </tr>
+                <tr>
+                  <td>salesforce.com</td>
+                  <td>/services/data/v20.0/sobjects/Account</td>
+                </tr>
+                <tr>
+                  <td>Facebook</td>
+                  <td>?v=1.0</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section>
+            <p>Twilio uses a timestamp in the URL (note the European format).</p>
+
+            <p>At compilation time, the developer includes the timestamp of the application when the code was compiled. That timestamp goes in all the HTTP requests</p>
+
+            <aside class="notes">
+              <p>When a request arrives, Twilio does a look up. Based on the timestamp they identify the API that was valid when this code was created and route accordingly.</p>
+
+              <p>It's a very clever and interesting approach, although we think it is a bit complex. For example, it can be confusing to understand whether the timestamp is the compilation time or the timestamp when the API was released. </p>
+            </aside>
+          </section>
+
+          <section>
+            <p>Salesforce.com uses v20.0, placed somewhere in the middle of the URL.</p>
+
+            <p>We like the use of the v. notation. However, we don't like using the .0 because it implies that the interface might be changing more frequently than it should. The logic behind an interface can change rapidly but the interface itself shouldn't change frequently.</p>
+          </section>
+
+          <section>
+            <p>Facebook also uses the v. notation but makes the version an optional parameter.</p>
+
+            <p>This is problematic because as soon as Facebook forced the API up to the next version, all the apps that didn't include the version number broke and had to be pulled back and version number added.</p>
+          </section>
+
+          <section>
+            <h3>How to think about version numbers in a pragmatic way with REST?</h3>
+          </section>
+
+          <section>
+            <p>Never release an API without a version. Make the version mandatory.</p>
+          </section>
+
+          <section>
+            <p>Specify the version with a <strong>'v'</strong> prefix. Move it all the way to the left in the URL so that it has the highest scope <strong>(e.g. /v1/dogs)</strong>.</p>
+          </section>
+
+          <section>
+            <p>Use a simple ordinal number. Don't use the dot notation like v1.2 because it implies a granularity of versioning that doesn't work well with APIs--it's an interface not an implementation. Stick with v1, v2, and so on.</p>
+          </section>
+
+          <section>
+            <h3>How many versions should you maintain?</h3>
+
+            <p>Maintain at least one version back.</p>
+          </section>
+
+          <section>
+            <h3>For how long should you maintain a version?</h3>
+
+            <p>At least one cycle to react before obsoleting a version.</p>
+
+            <p>Sometimes that's 6 months; sometimes it’s 2 years. It depends on developers' development platform, application type, and application users. For example, mobile apps take longer to rev’ than Web apps.</p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Summary</h3>
+          </section>
+
+          <section>
+            <ul>
+              <li class="fragment fade-up">Nouns are good; verbs are bad</li>
+              <li class="fragment fade-up">Keep base URL simple and intuitive</li>
+              <li class="fragment fade-up">Keep verbs out of base URL</li>
+              <li class="fragment fade-up">Use HTTP verbs to operate on the collections and elements.</li>
+              <li class="fragment fade-up">Use Plural nouns and concrete names</li>
+              <li class="fragment fade-up">Simplify associations</li>
+              <li class="fragment fade-up">Sweep complexity under the ‘?’</li>
+            </ul>
+          </section>
+
+          <section>
+            <ul>
+              <li class="fragment fade-up">Exceptions and error handling therefore become a key tool providing context and visibility into how to use an API.</li>
+              <li class="fragment fade-up">Use HTTP status codes and try to map them cleanly to relevant standard-based codes.</li>
+              <li class="fragment fade-up">Never release an API without a version. Make the version mandatory.</li>
+              <li class="fragment fade-up">Maintain at least one version back.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3>What's missing?</h3>
+          </section>
+
+          <section>
+            <ul>
+              <li class="fragment fade-up">Pagination and partial response</li>
+              <li class="fragment fade-up">Supporting multiple formats</li>
+              <li class="fragment fade-up">Attribute names</li>
+              <li class="fragment fade-up">Search</li>
+              <li class="fragment fade-up">Authentication</li>
+              <li class="fragment fade-up">Complement with an SDK</li>
+            </ul>
+            <br><br>
+            <small>More details: <a href="https://pages.apigee.com/rs/apigee/images/api-design-ebook-2012-03.pdf">https://pages.apigee.com/rs/apigee/images/api-design-ebook-2012-03.pdf</a></small>
+          </section>
+
+          <section>
+            <h1>End</h1>
+          </section>
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
+  </body>
+</html>
